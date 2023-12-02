@@ -21,7 +21,7 @@ proc part2(fp: string): int =
     var file = open(fp)
     
     for line in file.lines:
-        var minRequired = {"red": -99, "green": -99, "blue": -99}.toTable()
+        var minRequired = {"red": -1, "green": -1, "blue": -1}.toTable()
         for pair in line.split(":")[1].replace(";", ",").split(","):
             let parts = pair.strip().split(" ")
             let (n, color) = (parts[0].parseInt, parts[1])
