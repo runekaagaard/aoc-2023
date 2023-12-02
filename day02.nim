@@ -3,10 +3,7 @@ import std/sequtils, std/strutils, std/tables, std/enumerate, std/strformat
 iterator stones(line: string): (int, string) =
     for pair in line.split(":")[1].replace(";", ",").split(","):
         let parts = pair.strip().split(" ")
-        let (n, color) = (parts[0].parseInt, parts[1])
-
-        yield (n, color)
-
+        yield (parts[0].parseInt, parts[1])
 
 proc part1(fp: string): int =
     let maxAllowed = {"red": 12, "green": 13, "blue": 14}.toTable()
