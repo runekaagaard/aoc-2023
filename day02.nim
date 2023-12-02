@@ -1,9 +1,7 @@
-import strutils, tables, std/enumerate, strformat
-import std/sequtils
-
-let maxAllowed = {"red": 12, "green": 13, "blue": 14}.toTable()
+import sequtils, strutils, tables, std/enumerate, strformat
 
 proc part1(fp: string): int =
+    let maxAllowed = {"red": 12, "green": 13, "blue": 14}.toTable()
     var file = open(fp)
     
     for i, line in enumerate(file.lines):
