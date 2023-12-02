@@ -3,19 +3,15 @@ import std/sequtils, std/strutils, std/tables, std/enumerate, std/strformat
 iterator stones(line: string): (int, string) =
     for pair in line.split(":")[1].replace(";", ",").split(","):
         let parts = pair.strip().split(" ")
+        
         yield (parts[0].parseInt, parts[1])
 
 proc part1(fp: string): int =
-    let maxAllowed = {"red": 12, "green": 13, "blue": 14}.toTable()
     var file = open(fp)
+    const maxAllowed = {"red": 12, "green": 13, "blue": 14}.toTable()
     
     for i, line in enumerate(file.lines):
-        var ok = true
-        for n, color in stones(line):
-            if n > maxAllowed[color]:
-                ok = false
-
-        if ok:
+        if not stones(line).toSeq.anyIt(it[0] > maxAllowed[it[1]]):
             result += i + 1
 
     return result
