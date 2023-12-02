@@ -1,4 +1,4 @@
-import sequtils, strutils, tables, std/enumerate, strformat
+import std/sequtils, std/strutils, std/tables, std/enumerate, std/strformat
 
 proc part1(fp: string): int =
     let maxAllowed = {"red": 12, "green": 13, "blue": 14}.toTable()
