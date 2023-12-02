@@ -1,14 +1,14 @@
-import std/sequtils, std/strutils, std/tables, std/enumerate, std/strformat
+import std/strutils, std/tables, std/strformat
 
-let numbers = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8,
-               "nine": 9}.toTable
+const numbers = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8,
+                 "nine": 9}.toTable
 
 proc part12(fp: string, allow_words: bool=false): int =
     var file = open(fp)
     
     for line in file.lines:
         var (first, last) = (-1, -1)
-        for i, c in enumerate(line.toSeq):
+        for i, c in line:
             if c.isDigit:
                 let n = int(c) - int('0')
                 if first == -1:
