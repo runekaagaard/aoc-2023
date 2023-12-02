@@ -1,14 +1,20 @@
 import std/sequtils, std/strutils, std/tables, std/enumerate, std/strformat
 
+iterator stones(line: string): (int, string) =
+    for pair in line.split(":")[1].replace(";", ",").split(","):
+        let parts = pair.strip().split(" ")
+        let (n, color) = (parts[0].parseInt, parts[1])
+
+        yield (n, color)
+
+
 proc part1(fp: string): int =
     let maxAllowed = {"red": 12, "green": 13, "blue": 14}.toTable()
     var file = open(fp)
     
     for i, line in enumerate(file.lines):
         var ok = true
-        for pair in line.split(":")[1].replace(";", ",").split(","):
-            let parts = pair.strip().split(" ")
-            let (n, color) = (parts[0].parseInt, parts[1])
+        for n, color in stones(line):
             if n > maxAllowed[color]:
                 ok = false
 
@@ -22,9 +28,7 @@ proc part2(fp: string): int =
     
     for line in file.lines:
         var minRequired = {"red": -1, "green": -1, "blue": -1}.toTable()
-        for pair in line.split(":")[1].replace(";", ",").split(","):
-            let parts = pair.strip().split(" ")
-            let (n, color) = (parts[0].parseInt, parts[1])
+        for n, color in stones(line):
             minRequired[color] = max(minRequired[color], n)
 
         result += minRequired.values.toSeq.foldl(a * b)
