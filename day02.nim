@@ -1,4 +1,4 @@
-import std/sequtils, std/strutils, std/tables, std/enumerate, std/strformat
+import std/[sequtils, strutils, tables, enumerate, strformat]
 
 iterator stones(line: string): (int, string) =
     for pair in line.split(":")[1].replace(";", ",").split(","):
@@ -26,6 +26,6 @@ proc part2(fp: string): int =
 
 const day = "02"
 assert part1(fmt"inputs/{day}e1.txt") == 8
-assert part1(fmt"inputs/{day}a.txt") == 2720
+assert part1(fmt"inputs/{day}i.txt") == 2720
 assert part2(fmt"inputs/{day}e1.txt") == 2286
-assert part2(fmt"inputs/{day}a.txt") == 71535
+assert part2(fmt"inputs/{day}i.txt") == 71535

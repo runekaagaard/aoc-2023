@@ -1,0 +1,3 @@
+#!/bin/bash
+
+xclip -selection clipboard -o > inputs/$1e1.txt
