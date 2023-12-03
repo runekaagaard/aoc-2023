@@ -28,7 +28,7 @@ proc numAtPoint(grid: seq, x: int, y: int): Option[Num] =
         
     # Find full number
     var digits = ""
-    for x2 in countup(x0, grid[0].len-1):
+    for x2 in x0 .. grid[0].len-1:
         let cha = grid[y][x2]
         if cha.isDigit:
             digits &= cha
@@ -39,8 +39,8 @@ proc numAtPoint(grid: seq, x: int, y: int): Option[Num] =
         
 proc numsAround(grid: Grid, x: int, y: int): HashSet[Num] =
     ## Returns the numbers around a coordinate.
-    for dx in countup(-1, 1):
-        for dy in countup(-1, 1):
+    for dx in -1 .. 1:
+        for dy in -1 .. 1:
             let num = numAtPoint(grid, x + dx, y + dy)
             if num.isSome:
                 result.incl(num.get)
