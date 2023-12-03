@@ -1,4 +1,4 @@
-import std/[sequtils, strutils, tables, enumerate, strformat, sugar, sets, hashes, math]
+import std/[sequtils, strutils, tables, enumerate, strformat, sugar, sets, hashes, math, options]
 
 type
   Grid = seq[seq[char]]
@@ -11,10 +11,11 @@ proc f2grid(file: File): seq =
             collect:
                 for cha in line:
                     cha
-
-proc numAtPoint(grid: seq, x: int, y: int): Num =
+                    
+proc numAtPoint(grid: seq, x: int, y: int): Option[Num] =
     ## Finds the full number at a point as (x, y, number) or (-1, -1, -1) if not a number.
     var x0 = -1
+    
     # Find start of potential number.
     for x2 in countdown(x, 0):
         if grid[y][x2].isDigit:
@@ -22,27 +23,27 @@ proc numAtPoint(grid: seq, x: int, y: int): Num =
         else:
             break
 
+    if x0 == -1:
+        return Num.none
+        
     # Find full number
-    if x0 != -1:
-        var digits = ""
-        for x2 in countup(x0, grid[0].len-1):
-            let cha = grid[y][x2]
-            if cha.isDigit:
-                digits &= cha
-            else:
-                break
+    var digits = ""
+    for x2 in countup(x0, grid[0].len-1):
+        let cha = grid[y][x2]
+        if cha.isDigit:
+            digits &= cha
+        else:
+            break
 
-        return (x0, y, parseInt(digits))
-    else:
-        return (-1, -1, -1)
+    return (x0, y, parseInt(digits)).some
         
 proc numsAround(grid: Grid, x: int, y: int): HashSet[Num] =
     ## Returns the numbers around a coordinate.
     for dx in countup(-1, 1):
         for dy in countup(-1, 1):
             let num = numAtPoint(grid, x + dx, y + dy)
-            if num != (-1, -1, -1):
-                result.incl(num)
+            if num.isSome:
+                result.incl(num.get)
     
 iterator symbols(grid: Grid): (int, int) =
     ## Yields coordinates for all the symbols.
