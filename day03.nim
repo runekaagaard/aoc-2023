@@ -1,7 +1,8 @@
-import std/[sequtils, strutils, tables, enumerate, strformat, sugar, sets, hashes]
+import std/[sequtils, strutils, tables, enumerate, strformat, sugar, sets, hashes, math]
 
 type
   Grid = seq[seq[char]]
+  Num = (int, int, int)
   
 proc f2grid(file: File): seq =
     ## 0, 0 is top left. Access as [y][x].
@@ -11,7 +12,7 @@ proc f2grid(file: File): seq =
                 for cha in line:
                     cha
 
-proc numAtPoint(grid: seq, x: int, y: int): (int, int, int) =
+proc numAtPoint(grid: seq, x: int, y: int): Num =
     ## Finds the full number at a point as (x, y, number) or (-1, -1, -1) if not a number.
     var x0 = -1
     # Find start of potential number.
@@ -24,31 +25,24 @@ proc numAtPoint(grid: seq, x: int, y: int): (int, int, int) =
     # Find full number
     if x0 != -1:
         var digits = ""
-        for x2 in countup(x0, 9999):
-            try:
-                let cha = grid[y][x2]
-                if cha.isDigit:
-                    digits.add(cha)
-                else:
-                    break
-            except IndexDefect:
+        for x2 in countup(x0, grid[0].len-1):
+            let cha = grid[y][x2]
+            if cha.isDigit:
+                digits &= cha
+            else:
                 break
 
         return (x0, y, parseInt(digits))
     else:
         return (-1, -1, -1)
         
-proc numsAround(grid: Grid, x: int, y: int): seq[(int, int, int)] =
-    ## Returns the numbers a round a coordinates as (x, y, number).
+proc numsAround(grid: Grid, x: int, y: int): HashSet[Num] =
+    ## Returns the numbers around a coordinate.
     for dx in countup(-1, 1):
         for dy in countup(-1, 1):
-            try:
-                let num = numAtPoint(grid, x + dx, y + dy)
-                if num != (-1, -1, -1):
-                    if num notin result:
-                        result.add(num)
-            except IndexDefect:
-                discard
+            let num = numAtPoint(grid, x + dx, y + dy)
+            if num != (-1, -1, -1):
+                result.incl(num)
     
 iterator symbols(grid: Grid): (int, int) =
     ## Yields coordinates for all the symbols.
@@ -60,14 +54,11 @@ iterator symbols(grid: Grid): (int, int) =
 
 proc part1(file: File): int =
     let grid = f2grid(file)
-    var nums: seq[(int, int, int)] = @[]
+    var nums = initHashSet[Num]()
     for x, y in grid.symbols:
-        for num in numsAround(grid, x, y):
-            if num notin nums:
-                nums.add(num)
-                    
-    for x in nums:
-        result += x[2]
+        nums = nums + numsAround(grid, x, y)
+
+    return nums.mapIt(it[2]).sum
 
 proc part2(file: File): int =
     let grid = f2grid(file)
