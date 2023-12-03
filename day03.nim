@@ -2,7 +2,7 @@ import std/[sequtils, strutils, tables, enumerate, strformat, sugar, sets, hashe
 
 type
   Grid = seq[seq[char]]
-  Num = (int, int, int)
+  Num = tuple[x, y, num: int]
   
 proc f2grid(file: File): seq =
     ## 0, 0 is top left. Access as [y][x].
@@ -13,7 +13,7 @@ proc f2grid(file: File): seq =
                     cha
                     
 proc numAtPoint(grid: seq, x: int, y: int): Option[Num] =
-    ## Finds the full number at a point as (x, y, number) or (-1, -1, -1) if not a number.
+    ## Optionally return the Num as point.
     var x0 = -1
     
     # Find start of potential number.
@@ -59,7 +59,7 @@ proc part1(file: File): int =
     for x, y in grid.symbols:
         nums = nums + numsAround(grid, x, y)
 
-    return nums.mapIt(it[2]).sum
+    return nums.mapIt(it.num).sum
 
 proc part2(file: File): int =
     let grid = f2grid(file)
@@ -71,7 +71,7 @@ proc part2(file: File): int =
         if numsFound.len != 2:
             continue
         
-        result += numsFound.mapIt(it[2]).foldl(a * b)
+        result += numsFound.mapIt(it.num).foldl(a * b)
 
 const day = "03"
 assert part1(open(fmt"inputs/{day}e1.txt")) == 4361
