@@ -4,8 +4,7 @@ proc nums(s: string): HashSet[int] = collect(for x in s.split(" ").filterIt(it.s
 
 iterator parse(file: File): int =
     for line in file.lines:
-        let xs = line.split(":")[1].split "|"
-        yield (nums(xs[0]) * nums(xs[1])).len
+        yield line.split(":")[1].split("|").mapIt(nums(it)).foldl(a * b).len
 
 proc part1(file: File): int = file.parse.toSeq.filterIt(it > 0).mapIt(2 ^ (it - 1)).sum
     
