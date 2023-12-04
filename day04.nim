@@ -1,27 +1,20 @@
 import std/[sequtils, strutils, tables, enumerate, strformat, sugar, sets, hashes, math, options]
 
-type
-    Row = tuple[has, nums: HashSet[int]]
+proc nums(s: string): HashSet[int] = collect(for x in s.split(" ").filterIt(it.strip.len > 0): {x.parseInt})
 
-iterator parse(file: File): Row =
-    proc makeNums(s: string): HashSet[int] =
-        collect:
-            for x in s.split(" ").filterIt(it.strip.len > 0): {x.parseInt}
-                    
+iterator parse(file: File): int =
     for line in file.lines:
-        let parts = line.split(":")[1].split("|")
-        yield (makeNums(parts[0]), makeNums(parts[1]))
+        let xs = line.split(":")[1].split "|"
+        yield (nums(xs[0]) * nums(xs[1])).len
 
-proc matches(file: File): seq[int] = file.parse.toSeq.mapIt((it.has * it.nums).len)
-proc part1(file: File):   int      = file.matches.filterIt(it > 0).mapIt(2 ^ (it - 1)).sum
+proc part1(file: File): int = file.parse.toSeq.filterIt(it > 0).mapIt(2 ^ (it - 1)).sum
     
 proc part2(file: File): int =
-    var ms = file.matches
-    var counts = collect(initTable(ms.len)):
-        for i in 0 .. ms.len - 1: {i: 1}
+    var cards = file.parse.toSeq
+    var counts = collect(for i in 0 .. cards.len - 1: {i: 1})
 
-    for i in 0 .. ms.len - 1:
-        for j in 0 .. ms[i] - 1:
+    for i in 0 .. cards.len - 1:
+        for j in 0 .. cards[i] - 1:
             counts[i+j+1] += counts[i]
 
     counts.values.toSeq.sum
