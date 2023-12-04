@@ -10,13 +10,13 @@ proc part1(file: File): int = file.parse.toSeq.filterIt(it > 0).mapIt(2 ^ (it - 
     
 proc part2(file: File): int =
     var cards = file.parse.toSeq
-    var counts = collect(for i in 0 .. cards.len - 1: {i: 1})
+    var counts = collect(for i in 0 .. cards.len - 1: 1)
 
     for i in 0 .. cards.len - 1:
         for j in 0 .. cards[i] - 1:
             counts[i+j+1] += counts[i]
 
-    counts.values.toSeq.sum
+    counts.toSeq.sum
 
 const day = "04"
 assert part1(open(fmt"inputs/{day}e1.txt")) == 13
