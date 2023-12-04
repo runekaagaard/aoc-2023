@@ -10,7 +10,7 @@ proc part1(file: File): int = file.parse.toSeq.filterIt(it > 0).mapIt(2 ^ (it - 
     
 proc part2(file: File): int =
     var cards = file.parse.toSeq
-    var counts = collect(for i in 0 .. cards.len - 1: 1)
+    var counts = @[1].cycle(cards.len)
 
     for i in 0 .. cards.len - 1:
         for j in 0 .. cards[i] - 1:
