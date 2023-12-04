@@ -12,8 +12,8 @@ proc part2(file: File): int =
     var cards = file.parse.toSeq
     var counts = @[1].cycle(cards.len)
 
-    for i in 0 .. cards.len - 1:
-        for j in 0 .. cards[i] - 1:
+    for i, _ in cards:
+        for j in 0 ..< cards[i]:
             counts[i+j+1] += counts[i]
 
     counts.sum
