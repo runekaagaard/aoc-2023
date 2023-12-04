@@ -16,7 +16,7 @@ proc part2(file: File): int =
         for j in 0 .. cards[i] - 1:
             counts[i+j+1] += counts[i]
 
-    counts.toSeq.sum
+    counts.sum
 
 const day = "04"
 assert part1(open(fmt"inputs/{day}e1.txt")) == 13
