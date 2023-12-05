@@ -29,10 +29,10 @@ proc part1(file: File): int =
     
 proc part2(file: File): int =
     let (seeds, categories) = (getSeeds(file), getCategories(file))
-    result = int.high
     
+    result = int.high
     for pair in seeds.distribute(seeds.len div 2):
-        for seed in countup(pair[0], pair[0]+pair[1]-1):
+        for seed in pair[0] .. pair[0]+pair[1]-1:
             result = result.min(distance(seed, categories))
 
 const day = "05"
