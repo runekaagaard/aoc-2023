@@ -3,18 +3,16 @@ import std/[sequtils, strutils, tables, enumerate, strformat, sugar, sets, hashe
 type
     Map = tuple[d, s, r: int]
 
-proc parse(file: File): (seq[int], seq[seq[Map]]) =
-    proc asMap(xs: seq): Map = (xs[0], xs[1], xs[2])
-    let seeds: seq[int] = file.read_line.split(": ")[1].split(" ").mapIt(it.strip).map(parseInt)
-    var xs = file.lines.toSeq.filterIt(not it.endsWith(":")).join(".")
-    var categories:  seq[seq[Map]]
+proc getSeeds(file: File): seq[int] =
+    file.read_line.split(": ")[1].split(" ").mapIt(it.strip).map(parseInt)
     
-    for category in xs.split(".."):
-        var map = category.split(".").filterIt(it.len > 0).mapIt(it.split.mapIt(it.parseInt).asMap)
-        categories.add(map)
+proc initMap(xs: seq): Map = (xs[0], xs[1], xs[2])
 
-    return (seeds, categories)
-
+proc getCategories(file: File): seq[seq[Map]] =
+    collect:
+        for category in file.lines.toSeq.filterIt(not it.endsWith(":")).join(".").split(".."):
+            category.split(".").filterIt(it.len > 0).mapIt(it.split.mapIt(it.parseInt).initMap)
+    
 proc distance(seed: int, categories: seq[seq[Map]]): int =
     result = seed
     for i, category in categories:
@@ -26,11 +24,11 @@ proc distance(seed: int, categories: seq[seq[Map]]): int =
     return result
     
 proc part1(file: File): int =
-    let (seeds, categories) = parse(file)
+    let (seeds, categories) = (getSeeds(file), getCategories(file))
     seeds.mapIt(it.distance(categories)).min
     
 proc part2(file: File): int =
-    let (seeds, categories) = parse(file)
+    let (seeds, categories) = (getSeeds(file), getCategories(file))
     result = int.high
     
     for pair in seeds.distribute(seeds.len div 2):
