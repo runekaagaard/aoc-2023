@@ -3,10 +3,8 @@ import std/[sequtils, strutils, tables, enumerate, strformat, sugar, sets, hashe
 proc nums(line: string): seq[int] = line.split(":")[1].split(" ").filterIt(it.len > 0).mapIt(it.strip.parseInt)
 proc parse(lines: seq[string]): seq[(int, int)] = zip(lines[0].nums, lines[1].nums)
 
-proc solve(lines: seq[string]): int = 
-    result = 1
-    for (time, distance) in parse(lines):
-        result *= (1 ..< time).toSeq.filterIt((time - it) * it > distance).len
+proc solve(lines: seq[string]): int =
+    lines.parse.map(proc(x: tuple): int = (1 ..< x[0]).toSeq.filterIt((x[0] - it) * it > x[1]).len).prod
         
 proc part1(file: File): int = file.lines.toSeq.solve
 proc part2(file: File): int = file.lines.toSeq.mapIt(it.replace(" ", "")).solve
