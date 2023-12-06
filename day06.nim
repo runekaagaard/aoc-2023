@@ -6,12 +6,7 @@ proc parse(lines: seq[string]): seq[(int, int)] = zip(lines[0].nums, lines[1].nu
 proc solve(lines: seq[string]): int = 
     result = 1
     for (time, distance) in parse(lines):
-        var n = 0
-        for i in 1 ..< time:
-            if (time - i) * i > distance:
-                n += 1
-
-        result *= n
+        result *= countup(1, time-1).toSeq.filterIt((time - it) * it > distance).len
         
 proc part1(file: File): int = file.lines.toSeq.solve
 proc part2(file: File): int = file.lines.toSeq.mapIt(it.replace(" ", "")).solve
