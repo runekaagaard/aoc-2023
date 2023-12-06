@@ -1,15 +1,14 @@
 import std/[sequtils, strutils, tables, enumerate, strformat, sugar, sets, hashes, math, options, strscans]
 
-proc quadratic_nat_range(a: int, b: int): int =
+proc quadratic_nat_range(a: float, b: float): int =
     proc half(x: float): float = x / 2.0
-    var (c, d) = (a.float, b.float)
-    (c + sqrt(c ^ 2 - 4 * d)).half.ceil.int - (c - sqrt(c ^ 2 - 4 * d)).half.floor.int - 1    
+    (a + sqrt(a ^ 2 - 4 * b)).half.ceil.int - (a - sqrt(a ^ 2 - 4 * b)).half.floor.int - 1    
     
 proc nums(line: string): seq[int] = line.split(":")[1].split(" ").filterIt(it.len > 0).mapIt(it.strip.parseInt)
 proc parse(lines: seq[string]): seq[(int, int)] = zip(lines[0].nums, lines[1].nums)
 
 proc solve(lines: seq[string]): int =
-    lines.parse.mapIt(quadratic_nat_range(it[0], it[1])).prod
+    lines.parse.mapIt(quadratic_nat_range(it[0].float, it[1].float)).prod
         
 proc part1(file: File): int = file.lines.toSeq.solve
 proc part2(file: File): int = file.lines.toSeq.mapIt(it.replace(" ", "")).solve
