@@ -21,26 +21,26 @@ proc ranker(hand: seq[int], values: Table, jokersOn=false, rank: int = -1): (int
             counts[card] = count
 
     let rank = (if rank == -1: ranks.find(counts.values.toSeq.sortedByIt(it)) else: rank)
-    let strenght = (
+    let strength = (
         (ranks.len - rank) * (values.len ^ (hand.len+1)) +
         countdown(hand.len-1, 0).toSeq.mapIt(values.len ^ (hand.len-it) * hand[it]).sum
     )
     
-    (rank, strenght)
+    (rank, strength)
     
 proc parse(file: File, values: Table, jokersOn = false): seq[(int, int)] =
-    var rank, strenght: int
+    var rank, strength: int
     for line in file.lines:
         let xs = line.split(" ")
         let hand = xs[0].mapIt(values[it])
-        (rank, strenght) = hand.ranker(values, jokersOn)
+        (rank, strength) = hand.ranker(values, jokersOn)
 
         if jokersOn:
             var numJokers = hand.filterIt(it == joker).len
             if numJokers > 0:
-                (rank, strenght) = hand.ranker(values, jokersOn, jokers[rank][numJokers])
+                (rank, strength) = hand.ranker(values, jokersOn, jokers[rank][numJokers])
             
-        result.add((xs[1].parseInt, strenght))
+        result.add((xs[1].parseInt, strength))
 
     result.sortedByIt(it[1])
         
