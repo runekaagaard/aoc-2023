@@ -9,6 +9,8 @@ const cardToHex = {'A': 0xD, 'K': 0xC, 'Q': 0xB, 'J': 0xA, 'T': 0x9, '9': 0x8, '
 let handTypes = @[[5].toHashSet, [4].toHashSet, [3, 2].toHashSet, [3].toHashSet, [2, 2].toHashSet,
                     [2].toHashSet, initHashSet[int]()]
 
+echo handTypes.find(@[3, 2].toHashSet)
+
 proc handStrength(hand: seq[int]): int =
     var handType = initHashSet[int]()
     for card in hand.toHashSet:
@@ -17,17 +19,17 @@ proc handStrength(hand: seq[int]): int =
             continue
         handType.incl(count)
 
-    (6 - handTypes.find(handType)) * 1_000_000_000 + countdown(hand.len-1, 0).toSeq.mapIt(16^it*hand[it]).sum
+    echo "    ", handType, " ", handTypes.find(handType), " ", hand
+    (6 - handTypes.find(handType)) * 1_000_000_000 + countdown(hand.len-1, 0).toSeq.mapIt(
+        16^(hand.len-it+1)*hand[it]).sum
 
 proc parse(file: File): seq[Line] =
     for line in file.lines:
-        var xs = line.split(" ")
-        var hand = xs[0].mapIt(cardToHex[it])
-        result.add((xs[0], xs[1].parseInt, hand.handStrength))
-
-proc solve(lines: seq[Line]): int =
-    for (hand, bet, strength) in lines.toSeq.sortedByIt(it[2]).reversed:
-        echo hand, " ", bet, " ", strength
+        let xs = line.split(" ")
+        let hand = xs[0].mapIt(cardToHex[it])
+        let strenght = hand.handStrength
+        echo line, " ", strenght
+        result.add((xs[0], xs[1].parseInt, strenght))
         
 proc part1(file: File): int =
     for i, (hand, bet, strength) in file.parse.sortedByIt(it[2]):
