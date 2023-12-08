@@ -18,7 +18,7 @@ proc part1(file: File): int =
             return i
 
         cur = graph[cur][j]
-
+        
 proc part2(file: File): int =
     let cmds = file.readLine.toSeq.join(" ").split()
     discard file.readLine
@@ -32,16 +32,19 @@ proc part2(file: File): int =
 
         if a.endsWith("A"):
             curs.add(a)
-    
-    for i, cmd in cmds.cycle(100000):
-        assert cmd in @["L", "R"]
-        var j: int = (if cmd == "L": 0 else: 1)
-        echo curs
-        if curs.allIt(it.endsWith("Z")):
-            return i
-            
-        for k in 0 ..< curs.len:
-            curs[k] = graph[curs[k]][j]
+
+    var i = -1
+    for _ in 0 .. 100:
+        for cmd in cmds:
+            i += 1
+            assert cmd in @["L", "R"]
+            var j: int = (if cmd == "L": 0 else: 1)
+            if curs.allIt(it.endsWith("Z")):
+                return i
+
+            for k in 0 ..< curs.len:
+                curs[k] = graph[curs[k]][j]
+
         
 const day = "08"
 assert part1(open(fmt"inputs/{day}e1.txt")) == 2
