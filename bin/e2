@@ -1,3 +1,4 @@
 #!/bin/bash
 
 xclip -selection clipboard -o > inputs/$1e2.txt
+cat inputs/$1e2.txt
