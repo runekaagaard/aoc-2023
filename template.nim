@@ -1,4 +1,4 @@
-import std/[sequtils, strutils, tables, enumerate, strformat, sugar, sets, hashes, math, options, strscans]
+import std/[sequtils, strutils, enumerate, strformat, sugar, sets, hashes, math, options, strscans, algorithm, tables]
 
 proc parse(lines: seq[string]): seq[(int, int)] =
     discard
