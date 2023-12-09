@@ -6,9 +6,6 @@ proc parse(file: File): seq[seq[int]] =
             collect:
                 for n in line.split(" "):
                     n.parseInt
-
-proc solve(lines: seq[string]): int =
-    discard
         
 proc part1(file: File): int =
     for ns in file.parse:
@@ -35,6 +32,6 @@ proc part1(file: File): int =
 
 const day = "09"
 assert part1(open(fmt"inputs/{day}e1.txt")) == 114
-assert part1(open(fmt"inputs/{day}i.txt")) = 1834108701
+assert part1(open(fmt"inputs/{day}i.txt")) == 1834108701
 # echo part2(open(fmt"inputs/{day}e1.txt"))
 # echo part2(open(fmt"inputs/{day}i.txt"))
