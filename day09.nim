@@ -40,3 +40,4 @@ proc part12(file: File): (int, int) =
 
 const day = "09"
 assert part12(open(fmt"inputs/{day}e1.txt")) == (114, 2)
+assert part12(open(fmt"inputs/{day}i.txt"))  == (1834108701, 993)
