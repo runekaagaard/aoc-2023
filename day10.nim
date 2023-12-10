@@ -52,5 +52,4 @@ proc part12(file: File, s: string): (int, int) =
         (i, xp, yp) = (i+1, xt, yt)
 
 const day = "10"
-echo part12(open(fmt"inputs/{day}i.txt"), "7")
 assert part12(open(fmt"inputs/{day}i.txt"), "7") == (6773, 493)
