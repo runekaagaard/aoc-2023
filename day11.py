@@ -1,47 +1,20 @@
-import itertools
+from itertools import accumulate, combinations
 
-def pp(grid):
-    print("\n")
-    for x in grid:
-        print("".join(x))
+def solve(file_name, spacing):
+    rows = list(open(file_name).read().splitlines())
+    rng = range(len(rows))
+    cols = [[row[i] for row in rows] for i in rng]
 
-def clockwise(grid):
-    return [list(row) for row in zip(*grid[::-1])]
+    ys = list(accumulate(1 if "#" in y else spacing for y in rows))
+    xs = list(accumulate(1 if "#" in y else spacing for y in cols))
 
-def counterclockwise(grid):
-    return [list(row) for row in zip(*grid)][::-1]
+    points = [(xs[x], ys[y]) for x in rng for y in rng if rows[y][x] == "#"]
 
-def parse(file_name):
-    return [[y for y in x] for x in open(file_name).read().splitlines()]
-
-def targets(grid):
-    targets = []
-    for y, row in enumerate(grid):
-        for x, value in enumerate(row):
-            if value == "#":
-                targets.append((x, y))
-
-    return targets
-
-def space(grid):
-    grid2 = []
-    for row in grid:
-        if "#" not in row:
-            grid2.append(["."] * len(row))
-        grid2.append(row)
-
-    return grid2
-
-def part1(file_name):
-    grid = counterclockwise(space(clockwise(space(parse(file_name)))))
-    ts = targets(grid)
-
-    result = 0
-    for (x0, y0), (x1, y1) in itertools.combinations(ts, 2):
-        result += abs(x1 - x0) + abs(y1 - y0)
-
-    return result
+    return sum(abs(x1 - x0) + abs(y1 - y0) for (x0, y0), (x1, y1) in combinations(points, 2))
 
 DAY = 11
-assert part1(f"inputs/{DAY}e1.txt") == 374
-assert part1(f"inputs/{DAY}i.txt") == 9647174
+assert solve(f"inputs/{DAY}e1.txt", 2) == 374
+assert solve(f"inputs/{DAY}i.txt", 2) == 9647174
+assert solve(f"inputs/{DAY}e1.txt", 10) == 1030
+assert solve(f"inputs/{DAY}e1.txt", 100) == 8410
+assert solve(f"inputs/{DAY}i.txt", 1000000) == 377318892554
