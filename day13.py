@@ -28,14 +28,14 @@ def correct(pattern):
 def parse(file_name):
     return [[[z for z in y] for y in x.split("\n")] for x in open(file_name).read().strip().split("\n\n")]
 
-def solve(file_name):
+def part1(file_name):
     return sum(sum(reflexions(transpose(x))) + 100 * sum(reflexions(x)) for x in parse(file_name))
 
-def solve2(file_name):
+def part2(file_name):
     return sum(correct(transpose(x)) + 100 * correct(x) for x in parse(file_name))
 
 DAY = 13
-assert solve(f"inputs/{DAY}e1.txt") == 405
-assert solve(f"inputs/{DAY}i.txt") == 28651
-assert solve2(f"inputs/{DAY}e1.txt") == 400
-assert solve2(f"inputs/{DAY}i.txt") == 25450
+assert part1(f"inputs/{DAY}e1.txt") == 405
+assert part1(f"inputs/{DAY}i.txt") == 28651
+assert part2(f"inputs/{DAY}e1.txt") == 400
+assert part2(f"inputs/{DAY}i.txt") == 25450
