@@ -1,45 +1,41 @@
-def pp(pattern):
-    print("-----------------------------------------")
-    for row in pattern:
-        print("".join(row))
-    print()
+from itertools import product
 
-def is_perfect(pattern, lineno):
-    for i in range(1, len(pattern)):
-        x, y = lineno - i, lineno + i + 1
-        if x < 0 or y > (len(pattern) - 1):
-            return True
-
-        if pattern[x] != pattern[y]:
-            return False
-
-    return True
-
-def rot_clock(matrix):
+def transpose(matrix):
     return [list(x[::-1]) for x in zip(*matrix)]
 
-def reflexions(patterns, multiplier):
-    result = 0
-    for i, pattern in enumerate(patterns):
-        ok = False
-        for j in range(len(pattern) - 1):
-            if pattern[j] == pattern[j + 1]:
-                if is_perfect(pattern, j):
-                    assert ok is False
-                    ok = True
-                    result += (j+1) * multiplier
-                    break
+def is_perfect(pattern, i):
+    return all(pattern[a] == pattern[b] for a, b in zip(range(i - 1, -1, -1), range(i + 2, len(pattern))))
 
-    return result
+def reflexions(pattern):
+    for i in range(len(pattern) - 1):
+        if pattern[i] == pattern[i + 1] and is_perfect(pattern, i):
+            yield i + 1
+
+def corrections(pattern):
+    for i, j in product(range(len(pattern)), range(len(pattern[0]))):
+        pattern2 = [row[:] for row in pattern]
+        pattern2[i][j] = "#" if pattern2[i][j] == "." else "."
+        yield pattern2
+
+def correct(pattern):
+    for pattern2 in corrections(pattern):
+        for rfx in reflexions(pattern2):
+            if rfx not in reflexions(pattern):
+                return rfx
+
+    return 0
+
+def parse(file_name):
+    return [[[z for z in y] for y in x.split("\n")] for x in open(file_name).read().strip().split("\n\n")]
 
 def solve(file_name):
-    patterns = [[[z for z in y] for y in x.split("\n")] for x in open(file_name).read().strip().split("\n\n")]
+    return sum(sum(reflexions(transpose(x))) + 100 * sum(reflexions(x)) for x in parse(file_name))
 
-    result = reflexions([rot_clock(x) for x in patterns], 1)
-    result += reflexions(patterns, 100)
-
-    return result
+def solve2(file_name):
+    return sum(correct(transpose(x)) + 100 * correct(x) for x in parse(file_name))
 
 DAY = 13
 assert solve(f"inputs/{DAY}e1.txt") == 405
 assert solve(f"inputs/{DAY}i.txt") == 28651
+assert solve2(f"inputs/{DAY}e1.txt") == 400
+assert solve2(f"inputs/{DAY}i.txt") == 25450
