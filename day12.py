@@ -1,27 +1,49 @@
-import re
-from itertools import product
+"""
+Wow, I understand how DP works in principle, but it's HARD to construct the solution so it correctly assembles the
+correct state/result at the end. This solution is copied from github user fuglede, while trying to groks the
+different steps.
+"""
 
-def solve(file_name):
+def count(inp, arrs, curlen=0, cache=None):
+    result = 0
+    if cache is None:
+        cache = {}
+
+    if (inp, arrs, curlen) in cache:
+        return cache[(inp, arrs, curlen)]
+
+    if not inp:
+        return 1 if not arrs and not curlen else 0
+
+    if inp[0] == "?":
+        nxt = ["#", "."]
+    else:
+        nxt = inp[0]
+
+    for x in nxt:
+        if x == "#":
+            result += count(inp[1:], arrs, curlen + 1, cache)  # Continue building arrangement.
+        else:
+            if curlen > 0:
+                if arrs and arrs[0] == curlen:
+                    result += count(inp[1:], arrs[1:], 0, cache)  # Close arrangement
+            else:
+                result += count(inp[1:], arrs, 0, cache)  # No active arrangement, continue.
+
+    cache[inp, arrs, curlen] = result
+    return result
+
+def solve(file_name, folds=1):
     def parse(line):
         a, b = line.split(" ")
-        qs = [i for i, x in enumerate(line) if x == "?"]
-        return list(a), [int(x) for x in b.split(",")], len(qs), qs
+        return "?".join(a for _ in range(folds)) + ".", eval(b) * folds
 
     rows = [parse(x) for x in open(file_name).read().strip().splitlines()]
 
-    result = 0
-    for row, arr0, n, qs in rows:
-        for prod in product(".#", repeat=n):
-            row2 = row.copy()
-            for q, p in zip(qs, prod):
-                row2[q] = p
-
-            arr1 = [len(x) for x in re.split(r'\.+', "".join(row2)) if len(x)]
-            if arr1 == arr0:
-                result += 1
-
-    return result
+    return sum(count(inp, tuple(arrs)) for inp, arrs in rows)
 
 DAY = 12
 assert solve(f"inputs/{DAY}e1.txt") == 21
 assert solve(f"inputs/{DAY}i.txt") == 7506
+assert solve(f"inputs/{DAY}e1.txt", 5) == 525152
+assert solve(f"inputs/{DAY}i.txt", 5) == 548241300348335
